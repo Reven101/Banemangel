@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend # Peker til mappen hvor Dockerfile ligger
+    container_name: banemangel_backend
+    ports:
+      - "8000:8000" # Utsetter port 8000 på host til port 8000 i containeren
+    volumes:
+      - ./backend:/app # Synkroniserer backend-mappen med /app i containeren for live-reload
+    environment:
+      - DATABASE_URL=postgresql://user:password@db:5432/banemangeldb
+      - REDIS_URL=redis://redis:6379
+      # Legg til andre miljøvariabler her
+    depends_on:
+      - db
+      - redis
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload # --reload for utvikling
+
+  db:
+    image: postgres:15-alpine
+    container_name: banemangel_db
+    environment:
+      POSTGRES_DB: banemangeldb
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432" # Gjør databasen tilgjengelig på host maskinen om nødvendig
+
+  redis:
+    image: redis:7-alpine
+    container_name: banemangel_redis
+    ports:
+      - "6379:6379" # Gjør Redis tilgjengelig på host maskinen om nødvendig
+
+volumes:
+  postgres_data: # Navngitt volum for å persistere database data

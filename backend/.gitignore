@@ -1,0 +1,21 @@
+# Virtual Environment
+.venv/
+__pycache__/
+*.pyc
+
+# IDE / Editor specific
+.vscode/
+.idea/
+*.DS_Store
+
+# Environment variables
+.env
+
+# Playwright cache/browsers (kan være store)
+ms-playwright/
+
+# Python build artifacts
+*.egg-info/
+dist/
+build/
+wheels/
